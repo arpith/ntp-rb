@@ -1,5 +1,5 @@
 require 'socket'
-require 'base64'
+require 'date'
 NTP_FIELDS = [ :byte1, :stratum, :poll, :precision, :delay, :delay_fb,
                    :disp, :disp_fb, :ident, :ref_time, :ref_time_fb, :org_time,
                    :org_time_fb, :recv_time, :recv_time_fb, :trans_time,
@@ -21,5 +21,8 @@ else
   NTP_FIELDS.each do |field|
     packet_data_by_field[field] = packetdata.shift
   end
-  p packet_data_by_field 
+  timezone = Time.now.zone
+  unix_timestamp = packet_data_by_field[:trans_time] - 2208988800
+  datetime = DateTime.strptime(unix_timestamp.to_s, '%s')
+  p datetime.strftime("%+")
 end
